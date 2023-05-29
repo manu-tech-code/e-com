@@ -1,14 +1,37 @@
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
+import cors from 'cors'
+import mongoose from 'mongoose';
+import authRoutes from './routes/authRoutes'
+require("dotenv/config");
 
 const app = express()
-const port: any = process.env.PORT || 3000;
+app.use(cors());
+app.use(express.json());
 
-app.use('/api', (req, res) => {
-    res.json({
-        message: 'Hello World'
+
+const db = mongoose
+    .connect(
+        `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}/${process.env.DB_NAME}?retryWrites=true&w=majority`,
+    )
+    .then(() => {
+        console.log("Connected to database");
     })
+    .catch((err) => {
+        console.error("Error connecting to database:", err);
+    });
+
+const port: any = process.env.PORT || 3000;
+const baseUrl: string = process.env.BASE_URL || '';
+
+app.use(`${baseUrl}`, authRoutes)
+
+// 404 route
+app.use((req: Request, res: Response, next: NextFunction) => {
+    res.status(404).json({ message: '404 page not found' })
+    next()
 })
 
-app.listen(port ,() => {
-    console.log(`Server is running on port ${port}`)
-})
+app.listen(port, () => {
+    console.log(`Server started on port ${port}`);
+    db
+}); 
