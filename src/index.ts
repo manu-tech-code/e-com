@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes'
 import userRoutes from './routes/userRoutes'
 import adminRoutes from './routes/adminRoutes'
+import categoryRoutes from './routes/Category/categoryRoutes'
 require("dotenv/config");
 
 const app = express()
@@ -28,10 +29,11 @@ const baseUrl: string = process.env.BASE_URL || '';
 app.use(`${baseUrl}`, authRoutes)
 app.use(`${baseUrl}`, userRoutes)
 app.use(`${baseUrl}`, adminRoutes)
+app.use(`${baseUrl}`, categoryRoutes)
 
 // 404 route
 app.use((req: Request, res: Response, next: NextFunction) => {
-    res.status(404).json({ message: '404 page not found' })
+    res.status(404).json({ message: 'Endpoint does not exist' })
     next()
 })
 

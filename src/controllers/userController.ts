@@ -2,24 +2,21 @@ import { IUser, User } from "../models/user";
 import { Request, Response } from "express";
 
 export const profile = async (req: Request, res: Response): Promise<any> => {
+    const id = req.query._id || req.query.id
     try {
-        const user = await User.findById(req.query.id);
-
+        const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
-
-        const { firstName, lastName, email, username } = user;
-
         res.json({
-            firstName,
-            lastName,
-            email,
-            username
+            firstname: user.firstName,
+            lastname: user.lastName,
+            email: user.email,
+            username: user.username
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ success: false, message: "Internal Server Error" });
+        res.status(500).json({ success: false, message: "Internal server error!" });
     }
 }
 
@@ -30,11 +27,11 @@ export const updateProfile = async (req: Request, res: Response): Promise<any> =
             image: req.file?.filename
         });
 
-        if (!user) { return res.status(404).json({ message: "User not found" }) }
+        if (!user) { return res.status(404).json({ success: false, message: "User not found" }) }
 
-        res.json({ message: "Profile updated"});
+        res.json({ success: true, message: 'Profile updated successfully' });
     } catch (err) {
-        res.status(422).json({ mesage: "Update failed" });
+        res.status(500).json({ mesage: "Internal server error!" });
     }
 }
 

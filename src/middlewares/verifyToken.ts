@@ -5,15 +5,13 @@ export const checkAuth = async (req: Request, res: Response, next: NextFunction)
     const getPayload = req.header('Authorization')
     const payload = getPayload?.replace('Bearer ', '')
     if (!payload) return res.status(401).json({ message: 'Invalid Token' });
-    
+
     try {
-        const { _id, email, username, isAdmin } = jwt.decode(payload) as {_id: string, email: String, username: String, isAdmin: string}
-        console.log(_id, email, username)
+        const { _id, isAdmin } = jwt.decode(payload) as { _id: string, isAdmin: string }
         if (!_id) return res.status(401).json({ success: false, message: 'Unauthorised' });
-        // isAdmin ? console.lg('oadmin'): console.log('user')
-        isAdmin ? req.query.isAdmin = isAdmin : req.query.id = _id
+        isAdmin ? req.query = { _id, isAdmin } : req.query.id = _id
         next()
     } catch (error) {
-        res.status(500).json({ success: false, message: "Something went wrong!" })
+        res.status(500).json({ success: false, message: "Internal server error!" })
     }
 }
