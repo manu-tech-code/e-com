@@ -6,7 +6,8 @@ export interface IUser extends Document {
   email: String;
   username: String
   password: String;
-  confirm_password: String;
+  image: String
+  isAdmin: Boolean
   // recipes?: Schema.Types.ObjectId[];
 }
  
@@ -34,18 +35,19 @@ export const userSchema: Schema = new Schema(
       required: true,
       unique: true
     },
+    image: {
+      type: String,
+      required: false,
+    },
     password: {
       type: String,
       required: true,
       max: 1024,
       min: 6,
     },
-    confirm_password: {
-      type: String,
-      required: true,
-      max: 1024,
-      min: 6,
-    },
+    isAdmin: {
+      type: Boolean,
+    }
     // recipes: [
     //   {
     //     type: Schema.Types.ObjectId,

@@ -1,24 +1,41 @@
-// import { IUser, User } from "../models/user";
-// import { Request, Response } from "express";
+import { IUser, User } from "../models/user";
+import { Request, Response } from "express";
 
-// export const profile = async (req: Request, res: Response): Promise<any> => {
-//     const user = await User.findById(req.query.id);
+export const profile = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const user = await User.findById(req.query.id);
 
-//     const { firstName, lastName, email } = user;
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
 
-//     res.json({
-//         firstName,
-//         lastName,
-//         email,
-//     });
-// }
+        const { firstName, lastName, email, username } = user;
 
-// export const getAllUsers = async (req: Request, res: Response): Promise<any> => {
-//   try {
-//     const users: IUser[]  = await User.find().populate('recipes');
-//     res.json(users);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server Error' });
-//   }
-// }
+        res.json({
+            firstName,
+            lastName,
+            email,
+            username
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
+
+export const updateProfile = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const user = await User.findByIdAndUpdate(req.query.id, {
+            ...req.body,
+            image: req.file?.filename
+        });
+
+        if (!user) { return res.status(404).json({ message: "User not found" }) }
+
+        res.json({ message: "Profile updated"});
+    } catch (err) {
+        res.status(422).json({ mesage: "Update failed" });
+    }
+}
+
+

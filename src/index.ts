@@ -2,6 +2,8 @@ import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes'
+import userRoutes from './routes/userRoutes'
+import adminRoutes from './routes/adminRoutes'
 require("dotenv/config");
 
 const app = express()
@@ -24,6 +26,8 @@ const port: any = process.env.PORT || 3000;
 const baseUrl: string = process.env.BASE_URL || '';
 
 app.use(`${baseUrl}`, authRoutes)
+app.use(`${baseUrl}`, userRoutes)
+app.use(`${baseUrl}`, adminRoutes)
 
 // 404 route
 app.use((req: Request, res: Response, next: NextFunction) => {
