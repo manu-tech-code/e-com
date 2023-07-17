@@ -1,14 +1,14 @@
 import { Request, Response } from "express"
-import { Category } from "../../models/category"
+import { Category, ICategory } from "../../models/category"
 
 export const getAllCategories = async (req: Request, res: Response): Promise<Response> => {
-    const categories = await Category.find()
+    const categories: ICategory[] = await Category.populateSubcategories()
     return res.json({success: true, categories})
 } 
 
 export const getCategory = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const category = await Category.findById(req.params.id)
+        const category = await Category.findById(req.params.id).populate('subcategories')
         if (!category) return res.status(404).json({ success: false, message: "Category not found" })
     
         return res.json({success: true, category})

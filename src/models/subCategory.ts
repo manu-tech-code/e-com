@@ -4,7 +4,7 @@ import { ICategory } from "./category";
 export interface ISubCategory extends Document {
     name: String;
     description: String;
-    category?: ICategory['_id'];
+    category?: Schema.Types.ObjectId[];
 }
 
 export const subCategorySchema: Schema = new Schema<ISubCategory>(

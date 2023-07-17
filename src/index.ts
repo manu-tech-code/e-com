@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes'
 import userRoutes from './routes/userRoutes'
 import adminRoutes from './routes/adminRoutes'
 import categoryRoutes from './routes/Category/categoryRoutes'
+import subCategoryRoutes from './routes/Category/subCategoryRoutes'
 require("dotenv/config");
 
 const app = express()
@@ -30,6 +31,7 @@ app.use(`${baseUrl}`, authRoutes)
 app.use(`${baseUrl}`, userRoutes)
 app.use(`${baseUrl}`, adminRoutes)
 app.use(`${baseUrl}`, categoryRoutes)
+app.use(`${baseUrl}`, subCategoryRoutes)
 
 // 404 route
 app.use((req: Request, res: Response, next: NextFunction) => {

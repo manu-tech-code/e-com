@@ -1,10 +1,13 @@
-import mongoose, { Document, Schema } from "mongoose";
-import { ISubCategory, SubCategory } from "./subCategory";
+import mongoose, { Document, Schema, Model } from "mongoose";
+import { ISubCategory } from "./subCategory";
 
 export interface ICategory extends Document {
     name: String;
     description: String;
-    subCategories?: ISubCategory[];
+    subcategories?: Schema.Types.ObjectId[];
+}
+export interface CategoryModel extends Model<ICategory> {
+    populateSubcategories(): Promise<ICategory[]>;
 }
 
 const categorySchema: Schema = new Schema<ICategory>(
@@ -15,7 +18,7 @@ const categorySchema: Schema = new Schema<ICategory>(
             unique: true,
             min: 1,
         },
-        subCategories: [
+        subcategories: [
             {
                 type: Schema.Types.ObjectId,
                 ref: 'SubCategory'
@@ -25,5 +28,9 @@ const categorySchema: Schema = new Schema<ICategory>(
     { timestamps: true }
 );
 
-export const Category = mongoose.model<ICategory>("Category", categorySchema);
+categorySchema.statics.populateSubcategories = function (): Promise<ICategory[]> {
+    return this.find().populate('subcategories').exec() as Promise<ICategory[]>;
+};
+
+export const Category = mongoose.model<ICategory, CategoryModel>("Category", categorySchema);
 
